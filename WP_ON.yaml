@@ -1,0 +1,56 @@
+blueprint:
+  name: Whirlpool-Automation EIN
+  description: Schaltet den Whirlpool nach Sonnenaufgang und SOC20 ein
+  domain: automation
+  input:
+    battery_level:
+      name: Batteriesensor
+      description: Sensor des batterielevels
+      selector:
+        entity:
+          domain:
+          - sensor
+          multiple: false
+    switch:
+      name: Schalter
+      description: Schalter, der den Whirlpool einschaltet
+      selector:
+        entity:
+          domain:
+          - input_boolean
+          multiple: false  
+
+alias: Whirlpool_Automatisierung ein
+description: ""
+triggers:
+  - trigger: sun
+    event: sunrise
+    offset: 0
+conditions: []
+actions:
+  - if:
+      - condition: numeric_state
+        entity_id: !input battery_level
+        above: 20
+    then:
+      - action: switch.turn_on
+        metadata: {}
+        data: {}
+        target:
+          entity_id: !input switch
+    else:
+      - if: []
+        then:
+          - wait_for_trigger:
+              - trigger: numeric_state
+                entity_id:
+                  - !input battery_level
+                above: 20
+          - action: switch.turn_on
+            metadata: {}
+            data: {}
+            target:
+              entity_id: !input switch
+        else:
+          - stop: ""
+mode: single
