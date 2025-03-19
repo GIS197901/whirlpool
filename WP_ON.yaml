@@ -17,7 +17,7 @@ blueprint:
       selector:
         entity:
           domain:
-          - input_boolean
+          - switch
           multiple: false  
 
 alias: Whirlpool_Automatisierung ein
